@@ -130,8 +130,8 @@
 
 .preview-images {
   display: flex;
-  gap: 8px;
-  padding: 12px 16px;
+  gap: 12px;
+  padding: 16px 20px;
   overflow-x: auto;
   scrollbar-width: thin;
   scrollbar-color: #3b4a54 transparent;
@@ -153,9 +153,9 @@
 .preview-image-item {
   position: relative;
   flex-shrink: 0;
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
   overflow: hidden;
   border: 2px solid #2a3942;
 }
@@ -168,10 +168,10 @@
 
 .remove-image-btn {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 22px;
-  height: 22px;
+  top: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.7);
   border: none;
@@ -205,9 +205,9 @@
 }
 
 .upload-spinner {
-  width: 24px;
-  height: 24px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: #25D366;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -221,9 +221,9 @@
 
 .add-more-images-btn {
   flex-shrink: 0;
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
   border: 2px dashed #3b4a54;
   background: transparent;
   color: #8696a0;
@@ -330,13 +330,27 @@
   }
 
   .preview-images {
-    padding: 10px 14px;
+    padding: 12px 14px;
+    gap: 10px;
   }
 
   .preview-image-item,
   .add-more-images-btn {
-    width: 70px;
-    height: 70px;
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
+  }
+
+  .remove-image-btn {
+    width: 24px;
+    height: 24px;
+    top: 4px;
+    right: 4px;
+  }
+
+  .upload-spinner {
+    width: 28px;
+    height: 28px;
   }
 
   .preview-actions {
@@ -377,14 +391,24 @@
   }
 
   .preview-images {
-    padding: 8px 12px;
-    gap: 6px;
+    padding: 10px 12px;
+    gap: 8px;
   }
 
   .preview-image-item,
   .add-more-images-btn {
-    width: 60px;
-    height: 60px;
+    width: 72px;
+    height: 72px;
+  }
+
+  .remove-image-btn {
+    width: 22px;
+    height: 22px;
+  }
+
+  .upload-spinner {
+    width: 24px;
+    height: 24px;
   }
 
   .preview-actions {
