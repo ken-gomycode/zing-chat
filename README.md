@@ -2,6 +2,8 @@
 
 A real-time chat application built with React and Firebase.
 
+**Live demo**: https://zing-chat.onrender.com/
+
 ## Features
 - User authentication (email/password)
 - Real-time messaging with Firestore
