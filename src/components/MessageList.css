@@ -47,11 +47,6 @@
   position: relative;
 }
 
-.message.own {
-  position: absolute;
-  right: 0;
-}
-
 .message.other {
   margin-right: auto;
 }
@@ -89,8 +84,14 @@
   gap: 2px;
 }
 
+.own-message {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .message.own .message-content {
   align-items: flex-end;
+  justify-content: flex-end;
 }
 
 .message-sender {

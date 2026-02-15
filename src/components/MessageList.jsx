@@ -52,16 +52,18 @@ const MessageList = () => {
   );
 
   const renderOwnMessage = (message) => (
-    <div className="message own">
-      <div className="message-content">
-        <div className="message-bubble">
-          {renderMessageContent(message)}
-          <span className="message-time">
-            {formatMessageTime(message.createdAt)}
-            <span className="read-receipt">
-              {message.readBy?.length > 1 ? '✓✓' : '✓'}
+    <div className='own-message' >
+      <div className="message own">
+        <div className="message-content">
+          <div className="message-bubble">
+            {renderMessageContent(message)}
+            <span className="message-time">
+              {formatMessageTime(message.createdAt)}
+              <span className="read-receipt">
+                {message.readBy?.length > 1 ? '✓✓' : '✓'}
+              </span>
             </span>
-          </span>
+          </div>
         </div>
       </div>
     </div>
@@ -122,13 +124,15 @@ const MessageList = () => {
           index === 0 || messages[index - 1]?.senderId !== message.senderId;
 
         return (
-          <div className="message-wrapper" key={message.id}>
+          <div key={message.id}>
             {showDateSeparator && (
               <div className="date-separator">
                 <span>{formatMessageDate(message.createdAt)}</span>
               </div>
             )}
-            {isOwn ? renderOwnMessage(message) : renderOtherMessage(message, showAvatar)}
+            <div className="message-wrapper">
+              {isOwn ? renderOwnMessage(message) : renderOtherMessage(message, showAvatar)}
+            </div>
           </div>
         );
       })}
