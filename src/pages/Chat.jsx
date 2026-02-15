@@ -80,7 +80,7 @@ const ChatContent = () => {
       </div>
 
       <aside className={`sidebar ${showMobileSidebar ? 'show' : ''}`}>
-        <div className="sidebar-header">
+        <div className="sidebar-header topbar">
           <div className="app-logo">
             <span className="logo-text">Zing</span>
           </div>
@@ -123,7 +123,7 @@ const ChatContent = () => {
       <main className="chat-main">
         {activeRoom ? (
           <>
-            <div className="chat-header">
+            <div className="chat-header topbar">
               <div className="chat-header-info">
                 <button className="back-btn" onClick={handleBackToChats} title="Back to chats">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -177,7 +177,7 @@ const ChatContent = () => {
 
       {activeRoom && (
         <aside className="info-panel">
-          <div className="info-header">
+          <div className="info-header topbar">
             <h3>Details</h3>
           </div>
           <div className="info-content">

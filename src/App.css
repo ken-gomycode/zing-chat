@@ -20,6 +20,10 @@
   animation: spin 0.8s linear infinite;
 }
 
+.topbar {
+  height: 90px;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
