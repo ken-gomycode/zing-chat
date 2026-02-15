@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
 import { formatMessageTime, formatMessageDate, isSameDay } from '../utils/dateUtils';
@@ -10,7 +10,60 @@ const MessageList = () => {
   const messagesEndRef = useRef(null);
   const containerRef = useRef(null);
   const wasAtBottomRef = useRef(true);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+
+  // Extract all image URLs from messages
+  const imageList = useMemo(() => {
+    return messages
+      .filter(msg => msg.type === 'image' && msg.fileURL)
+      .map(msg => msg.fileURL);
+  }, [messages]);
+
+  const selectedImage = selectedImageIndex !== null ? imageList[selectedImageIndex] : null;
+
+  const openImage = (imageUrl) => {
+    const index = imageList.indexOf(imageUrl);
+    if (index !== -1) {
+      setSelectedImageIndex(index);
+    }
+  };
+
+  const closeModal = () => {
+    setSelectedImageIndex(null);
+  };
+
+  const goToPrevious = useCallback(() => {
+    if (selectedImageIndex !== null && selectedImageIndex > 0) {
+      setSelectedImageIndex(selectedImageIndex - 1);
+    }
+  }, [selectedImageIndex]);
+
+  const goToNext = useCallback(() => {
+    if (selectedImageIndex !== null && selectedImageIndex < imageList.length - 1) {
+      setSelectedImageIndex(selectedImageIndex + 1);
+    }
+  }, [selectedImageIndex, imageList.length]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (selectedImageIndex === null) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goToPrevious();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        goToNext();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedImageIndex, goToPrevious, goToNext]);
 
   useEffect(() => {
     if (wasAtBottomRef.current) {
@@ -31,7 +84,7 @@ const MessageList = () => {
           src={message.fileURL}
           alt="Shared"
           className="message-image"
-          onClick={() => setSelectedImage(message.fileURL)}
+          onClick={() => openImage(message.fileURL)}
         />
       )}
       {message.type === 'file' && message.fileURL && (
@@ -114,6 +167,9 @@ const MessageList = () => {
     );
   }
 
+  const hasPrevious = selectedImageIndex !== null && selectedImageIndex > 0;
+  const hasNext = selectedImageIndex !== null && selectedImageIndex < imageList.length - 1;
+
   return (
     <>
       <div className="message-list" ref={containerRef} onScroll={handleScroll}>
@@ -142,18 +198,52 @@ const MessageList = () => {
       </div>
 
       {selectedImage && (
-        <div className="image-modal-overlay" onClick={() => setSelectedImage(null)}>
+        <div className="image-modal-overlay" onClick={closeModal}>
           <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
             <button
               className="image-modal-close"
-              onClick={() => setSelectedImage(null)}
+              onClick={closeModal}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
             </button>
+
+            {/* Navigation buttons */}
+            {hasPrevious && (
+              <button
+                className="image-modal-nav image-modal-prev"
+                onClick={goToPrevious}
+                title="Previous image (←)"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+            )}
+
+            {hasNext && (
+              <button
+                className="image-modal-nav image-modal-next"
+                onClick={goToNext}
+                title="Next image (→)"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            )}
+
             <img src={selectedImage} alt="Full size" className="image-modal-img" />
+
+            {/* Image counter */}
+            {imageList.length > 1 && (
+              <div className="image-modal-counter">
+                {selectedImageIndex + 1} / {imageList.length}
+              </div>
+            )}
+
             <a
               href={selectedImage}
               target="_blank"
