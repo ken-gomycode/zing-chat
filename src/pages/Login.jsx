@@ -44,7 +44,7 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-card">
         <h1>Welcome Back</h1>
-        <p className="auth-subtitle">Sign in to continue to ChatApp</p>
+        <p className="auth-subtitle">Sign in to continue to Zing</p>
 
         {error && <div className="auth-error">{error}</div>}
 

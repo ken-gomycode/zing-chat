@@ -40,15 +40,8 @@ const ChatContent = () => {
     <div className={`chat-container ${activeRoom ? 'has-info-panel has-active-chat' : ''}`}>
       {/* Mobile Header - shown when no chat selected on mobile */}
       <div className="mobile-header">
-        <div className="user-info">
-          <div className="avatar">
-            {userProfile?.photoURL ? (
-              <img src={userProfile.photoURL} alt="" />
-            ) : (
-              userProfile?.displayName?.charAt(0).toUpperCase()
-            )}
-          </div>
-          <span className="user-name">{userProfile?.displayName}</span>
+        <div className="app-logo">
+          <span className="logo-text">Zing</span>
         </div>
         <div className="mobile-header-actions">
           <button
@@ -88,15 +81,8 @@ const ChatContent = () => {
 
       <aside className={`sidebar ${showMobileSidebar ? 'show' : ''}`}>
         <div className="sidebar-header">
-          <div className="user-info">
-            <div className="avatar">
-              {userProfile?.photoURL ? (
-                <img src={userProfile.photoURL} alt="" />
-              ) : (
-                userProfile?.displayName?.charAt(0).toUpperCase()
-              )}
-            </div>
-            <span className="user-name">{userProfile?.displayName}</span>
+          <div className="app-logo">
+            <span className="logo-text">Zing</span>
           </div>
           <button onClick={logout} className="logout-btn" title="Logout">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -183,7 +169,7 @@ const ChatContent = () => {
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
               </svg>
             </div>
-            <h2>Welcome to ChatApp</h2>
+            <h2>Welcome to Zing</h2>
             <p>Select a chat or start a new conversation</p>
           </div>
         )}

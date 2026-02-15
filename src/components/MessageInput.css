@@ -18,7 +18,7 @@
 
 .progress-bar {
   height: 4px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #25D366;
   border-radius: 2px;
   transition: width 0.3s;
   flex: 1;
@@ -62,7 +62,7 @@
 }
 
 .send-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #25D366;
   color: white;
 }
 

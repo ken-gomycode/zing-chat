@@ -66,14 +66,14 @@
 
 .room-item.active {
   background: #f3f4f6;
-  border-left-color: #667eea;
+  border-left-color: #25D366;
 }
 
 .room-avatar {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #128C7E;
   color: white;
   display: flex;
   align-items: center;
@@ -131,7 +131,7 @@
   }
 
   .room-item.active {
-    background: #f0f4ff;
+    background: #e8f5e9;
     border-left: none;
   }
 

@@ -19,12 +19,25 @@
 }
 
 .sidebar-header {
-  padding: 20px;
+  padding: 16px 20px;
   border-bottom: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #128C7E;
+}
+
+/* App Logo */
+.app-logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.5px;
 }
 
 .user-info {
@@ -135,7 +148,7 @@
   width: 28px;
   height: 28px;
   border-radius: 6px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #25D366;
   color: white;
   border: none;
   font-size: 18px;
@@ -148,7 +161,7 @@
 
 .new-chat-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.4);
 }
 
 .rooms-list {
@@ -189,7 +202,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #128C7E;
   color: white;
   display: flex;
   align-items: center;
@@ -234,14 +247,14 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  background: rgba(37, 211, 102, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .empty-icon svg {
-  color: #667eea;
+  color: #25D366;
 }
 
 .no-chat-selected h2 {
@@ -380,25 +393,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 14px 16px;
+    background: #128C7E;
     position: sticky;
     top: 0;
     z-index: 100;
   }
 
-  .mobile-header .user-info {
-    gap: 10px;
-  }
-
-  .mobile-header .avatar {
-    width: 36px;
-    height: 36px;
-    font-size: 14px;
-  }
-
-  .mobile-header .user-name {
-    font-size: 15px;
+  .mobile-header .app-logo .logo-text {
+    font-size: 22px;
   }
 
   .mobile-header-actions {
@@ -510,20 +513,11 @@
 /* Extra small screens */
 @media (max-width: 380px) {
   .mobile-header {
-    padding: 12px;
+    padding: 10px 12px;
   }
 
-  .mobile-header .avatar {
-    width: 32px;
-    height: 32px;
-  }
-
-  .mobile-header .user-name {
-    font-size: 14px;
-    max-width: 100px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .mobile-header .app-logo .logo-text {
+    font-size: 20px;
   }
 
   .chat-header {
