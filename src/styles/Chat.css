@@ -1,8 +1,12 @@
 .chat-container {
   display: grid;
-  grid-template-columns: 300px 1fr 280px;
+  grid-template-columns: 300px 1fr;
   height: 100vh;
   background: #f8fafc;
+}
+
+.chat-container.has-info-panel {
+  grid-template-columns: 300px 1fr 280px;
 }
 
 /* Sidebar */
@@ -325,13 +329,14 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
-  .chat-container {
+  .chat-container.has-info-panel {
     grid-template-columns: 280px 1fr 260px;
   }
 }
 
 @media (max-width: 1024px) {
-  .chat-container {
+  .chat-container,
+  .chat-container.has-info-panel {
     grid-template-columns: 280px 1fr;
   }
 

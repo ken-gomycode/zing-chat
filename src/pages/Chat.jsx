@@ -32,7 +32,7 @@ const ChatContent = () => {
   };
 
   return (
-    <div className="chat-container">
+    <div className={`chat-container ${activeRoom ? 'has-info-panel' : ''}`}>
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="user-info">
@@ -131,43 +131,34 @@ const ChatContent = () => {
         )}
       </main>
 
-      <aside className="info-panel">
-        {activeRoom ? (
-          <>
-            <div className="info-header">
-              <h3>Details</h3>
+      {activeRoom && (
+        <aside className="info-panel">
+          <div className="info-header">
+            <h3>Details</h3>
+          </div>
+          <div className="info-content">
+            <div className="info-section">
+              <h4>Room Info</h4>
+              <p><strong>Name:</strong> {getRoomDisplayName(activeRoom)}</p>
+              <p><strong>Type:</strong> {activeRoom.type === 'direct' ? 'Direct Message' : 'Group'}</p>
+              <p><strong>Members:</strong> {activeRoom.memberCount}</p>
             </div>
-            <div className="info-content">
-              <div className="info-section">
-                <h4>Room Info</h4>
-                <p><strong>Name:</strong> {getRoomDisplayName(activeRoom)}</p>
-                <p><strong>Type:</strong> {activeRoom.type === 'direct' ? 'Direct Message' : 'Group'}</p>
-                <p><strong>Members:</strong> {activeRoom.memberCount}</p>
-              </div>
-              <div className="info-section">
-                <h4>Actions</h4>
-                <button
-                  className="btn-danger-outline"
-                  onClick={() => setShowDeleteConfirm(true)}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
-                  Delete Chat
-                </button>
-              </div>
+            <div className="info-section">
+              <h4>Actions</h4>
+              <button
+                className="btn-danger-outline"
+                onClick={() => setShowDeleteConfirm(true)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                Delete Chat
+              </button>
             </div>
-          </>
-        ) : (
-          <>
-            <div className="info-header">
-              <h3>Details</h3>
-            </div>
-            <p className="empty-state">Select a chat to see details</p>
-          </>
-        )}
-      </aside>
+          </div>
+        </aside>
+      )}
 
       <NewRoomModal
         isOpen={showNewRoomModal}
