@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
 import { formatMessageTime, formatMessageDate, isSameDay } from '../utils/dateUtils';
@@ -10,6 +10,7 @@ const MessageList = () => {
   const messagesEndRef = useRef(null);
   const containerRef = useRef(null);
   const wasAtBottomRef = useRef(true);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     if (wasAtBottomRef.current) {
@@ -30,7 +31,7 @@ const MessageList = () => {
           src={message.fileURL}
           alt="Shared"
           className="message-image"
-          onClick={() => window.open(message.fileURL, '_blank')}
+          onClick={() => setSelectedImage(message.fileURL)}
         />
       )}
       {message.type === 'file' && message.fileURL && (
@@ -114,30 +115,62 @@ const MessageList = () => {
   }
 
   return (
-    <div className="message-list" ref={containerRef} onScroll={handleScroll}>
-      {messages.map((message, index) => {
-        const isOwn = message.senderId === user?.uid;
-        const showDateSeparator =
-          index === 0 ||
-          !isSameDay(message.createdAt, messages[index - 1]?.createdAt);
-        const showAvatar =
-          index === 0 || messages[index - 1]?.senderId !== message.senderId;
+    <>
+      <div className="message-list" ref={containerRef} onScroll={handleScroll}>
+        {messages.map((message, index) => {
+          const isOwn = message.senderId === user?.uid;
+          const showDateSeparator =
+            index === 0 ||
+            !isSameDay(message.createdAt, messages[index - 1]?.createdAt);
+          const showAvatar =
+            index === 0 || messages[index - 1]?.senderId !== message.senderId;
 
-        return (
-          <div key={message.id}>
-            {showDateSeparator && (
-              <div className="date-separator">
-                <span>{formatMessageDate(message.createdAt)}</span>
+          return (
+            <div key={message.id}>
+              {showDateSeparator && (
+                <div className="date-separator">
+                  <span>{formatMessageDate(message.createdAt)}</span>
+                </div>
+              )}
+              <div className="message-wrapper">
+                {isOwn ? renderOwnMessage(message) : renderOtherMessage(message, showAvatar)}
               </div>
-            )}
-            <div className="message-wrapper">
-              {isOwn ? renderOwnMessage(message) : renderOtherMessage(message, showAvatar)}
             </div>
+          );
+        })}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {selectedImage && (
+        <div className="image-modal-overlay" onClick={() => setSelectedImage(null)}>
+          <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="image-modal-close"
+              onClick={() => setSelectedImage(null)}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <img src={selectedImage} alt="Full size" className="image-modal-img" />
+            <a
+              href={selectedImage}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="image-modal-download"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Open in new tab
+            </a>
           </div>
-        );
-      })}
-      <div ref={messagesEndRef} />
-    </div>
+        </div>
+      )}
+    </>
   );
 };
 
