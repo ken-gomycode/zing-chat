@@ -35,6 +35,22 @@ export const searchUsers = async (searchTerm, currentUserId, maxResults = 10) =>
     }));
 };
 
+export const getAllUsers = async (currentUserId, maxResults = 30) => {
+  const q = query(
+    usersRef,
+    orderBy('displayName_lowercase'),
+    limit(maxResults)
+  );
+
+  const snapshot = await getDocs(q);
+  return snapshot.docs
+    .filter((doc) => doc.id !== currentUserId)
+    .map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+};
+
 export const updateUserStatus = async (userId, status) => {
   const userRef = doc(db, 'users', userId);
   await updateDoc(userRef, {

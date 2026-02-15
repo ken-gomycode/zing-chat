@@ -72,6 +72,15 @@
   text-align: center;
 }
 
+.results-header {
+  padding: 8px 24px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #9ca3af;
+  letter-spacing: 0.5px;
+}
+
 .user-result {
   display: flex;
   align-items: center;

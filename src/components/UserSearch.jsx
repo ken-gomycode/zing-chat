@@ -1,15 +1,33 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
-import { searchUsers } from '../services/users';
+import { searchUsers, getAllUsers } from '../services/users';
 import './UserSearch.css';
 
 const UserSearch = ({ isOpen, onClose }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const { user } = useAuth();
   const { startDirectChat } = useChat();
+
+  // Load all users when modal opens
+  useEffect(() => {
+    if (isOpen && user) {
+      setInitialLoading(true);
+      getAllUsers(user.uid, 30)
+        .then((users) => {
+          setAllUsers(users);
+          setInitialLoading(false);
+        })
+        .catch((error) => {
+          console.error('Failed to load users:', error);
+          setInitialLoading(false);
+        });
+    }
+  }, [isOpen, user]);
 
   const handleSearch = useCallback(async () => {
     if (!searchTerm.trim() || !user) {
@@ -48,6 +66,10 @@ const UserSearch = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  // Show search results if searching, otherwise show all users
+  const displayUsers = searchTerm.trim() ? results : allUsers;
+  const isLoading = searchTerm.trim() ? loading : initialLoading;
+
   return (
     <div className="modal-overlay" onClick={handleClose}>
       <div className="user-search-modal" onClick={(e) => e.stopPropagation()}>
@@ -76,44 +98,53 @@ const UserSearch = ({ isOpen, onClose }) => {
         </div>
 
         <div className="search-results">
-          {loading && (
+          {isLoading && (
             <div className="search-loading">
               <div className="spinner small" />
-              <span>Searching...</span>
+              <span>{searchTerm ? 'Searching...' : 'Loading users...'}</span>
             </div>
           )}
 
-          {!loading && searchTerm && results.length === 0 && (
+          {!isLoading && searchTerm && displayUsers.length === 0 && (
             <div className="no-results">
               <p>No users found</p>
             </div>
           )}
 
-          {!loading && results.map((user) => (
-            <div
-              key={user.id}
-              className="user-result"
-              onClick={() => handleSelectUser(user)}
-            >
-              <div className="user-avatar">
-                {user.photoURL ? (
-                  <img src={user.photoURL} alt="" />
-                ) : (
-                  user.displayName?.charAt(0).toUpperCase()
-                )}
-                <span className={`status-dot ${user.status || 'offline'}`} />
-              </div>
-              <div className="user-details">
-                <span className="user-name">{user.displayName}</span>
-                <span className="user-email">{user.email}</span>
-              </div>
+          {!isLoading && !searchTerm && displayUsers.length === 0 && (
+            <div className="no-results">
+              <p>No other users yet</p>
             </div>
-          ))}
+          )}
 
-          {!loading && !searchTerm && (
-            <div className="search-hint">
-              <p>Type a name to search for users</p>
-            </div>
+          {!isLoading && displayUsers.length > 0 && (
+            <>
+              {!searchTerm && (
+                <div className="results-header">
+                  <span>All Users ({displayUsers.length})</span>
+                </div>
+              )}
+              {displayUsers.map((userItem) => (
+                <div
+                  key={userItem.id}
+                  className="user-result"
+                  onClick={() => handleSelectUser(userItem)}
+                >
+                  <div className="user-avatar">
+                    {userItem.photoURL ? (
+                      <img src={userItem.photoURL} alt="" />
+                    ) : (
+                      userItem.displayName?.charAt(0).toUpperCase()
+                    )}
+                    <span className={`status-dot ${userItem.status || 'offline'}`} />
+                  </div>
+                  <div className="user-details">
+                    <span className="user-name">{userItem.displayName}</span>
+                    <span className="user-email">{userItem.email}</span>
+                  </div>
+                </div>
+              ))}
+            </>
           )}
         </div>
       </div>
