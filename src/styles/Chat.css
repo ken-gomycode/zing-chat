@@ -180,6 +180,8 @@
   display: flex;
   flex-direction: column;
   background: #0b141a;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .chat-header {

@@ -19,6 +19,7 @@ html, body, #root {
   padding: 0;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 a {
@@ -47,10 +48,10 @@ input, textarea {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #3b4a54;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #4a5b66;
 }
