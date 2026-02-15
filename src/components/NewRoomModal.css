@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,13 +22,14 @@
 }
 
 .modal-content {
-  background: white;
+  background: #1f2c33;
   border-radius: 16px;
   width: 100%;
   max-width: 400px;
   margin: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   animation: slideUp 0.3s ease;
+  border: 1px solid #2a3942;
 }
 
 @keyframes slideUp {
@@ -47,36 +48,38 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #2a3942;
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 18px;
-  color: #1a1a2e;
+  color: #e9edef;
 }
 
 .modal-close {
   padding: 8px;
   background: none;
   border: none;
-  color: #6b7280;
+  color: #8696a0;
   cursor: pointer;
   border-radius: 8px;
   transition: background 0.2s;
 }
 
 .modal-close:hover {
-  background: #f3f4f6;
+  background: #2a3942;
+  color: #e9edef;
 }
 
 .modal-error {
   margin: 16px 24px 0;
   padding: 12px;
-  background: #fee2e2;
-  color: #dc2626;
+  background: #3c2a2a;
+  color: #f87171;
   border-radius: 8px;
   font-size: 14px;
+  border: 1px solid #5c3a3a;
 }
 
 .modal-form {
@@ -91,23 +94,29 @@
   display: block;
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  color: #d1d7db;
   margin-bottom: 6px;
 }
 
 .modal-form input {
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #2a3942;
   border-radius: 8px;
   font-size: 15px;
   transition: border-color 0.2s, box-shadow 0.2s;
+  background: #111b21;
+  color: #e9edef;
 }
 
 .modal-form input:focus {
   outline: none;
   border-color: #25D366;
-  box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1);
+  box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.15);
+}
+
+.modal-form input::placeholder {
+  color: #8696a0;
 }
 
 .modal-actions {
@@ -127,19 +136,19 @@
 }
 
 .btn-secondary {
-  background: #f3f4f6;
+  background: #2a3942;
   border: none;
-  color: #374151;
+  color: #e9edef;
 }
 
 .btn-secondary:hover {
-  background: #e5e7eb;
+  background: #3b4a54;
 }
 
 .btn-primary {
   background: #25D366;
   border: none;
-  color: white;
+  color: #111b21;
 }
 
 .btn-primary:hover:not(:disabled) {

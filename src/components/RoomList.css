@@ -12,7 +12,7 @@
 
 .skeleton-room {
   height: 64px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #1f2c33 25%, #2a3942 50%, #1f2c33 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 8px;
@@ -31,11 +31,11 @@
 .room-list-error {
   padding: 40px 20px;
   text-align: center;
-  color: #9ca3af;
+  color: #8696a0;
 }
 
 .room-list-error {
-  color: #dc2626;
+  color: #f87171;
 }
 
 .room-list-empty p,
@@ -47,7 +47,7 @@
 .room-list-error .hint {
   font-size: 13px;
   margin-top: 4px;
-  color: #9ca3af;
+  color: #8696a0;
 }
 
 .room-item {
@@ -61,11 +61,11 @@
 }
 
 .room-item:hover {
-  background: #f9fafb;
+  background: #1f2c33;
 }
 
 .room-item.active {
-  background: #f3f4f6;
+  background: #2a3942;
   border-left-color: #25D366;
 }
 
@@ -73,8 +73,8 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #128C7E;
-  color: white;
+  background: #2a3942;
+  color: #e9edef;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -97,7 +97,7 @@
 
 .room-name {
   font-weight: 500;
-  color: #1a1a2e;
+  color: #e9edef;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -105,14 +105,14 @@
 
 .room-time {
   font-size: 12px;
-  color: #9ca3af;
+  color: #8696a0;
   flex-shrink: 0;
 }
 
 .room-preview {
   margin: 2px 0 0 0;
   font-size: 13px;
-  color: #6b7280;
+  color: #8696a0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -123,15 +123,15 @@
   .room-item {
     padding: 14px 16px;
     border-left: none;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid #2a3942;
   }
 
   .room-item:active {
-    background: #f3f4f6;
+    background: #2a3942;
   }
 
   .room-item.active {
-    background: #e8f5e9;
+    background: #1f3a32;
     border-left: none;
   }
 
@@ -147,7 +147,7 @@
 
   .room-preview {
     font-size: 14px;
-    color: #9ca3af;
+    color: #8696a0;
   }
 
   .room-list-empty,

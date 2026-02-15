@@ -1,7 +1,7 @@
 .message-input-container {
   padding: 16px;
-  border-top: 1px solid #e5e7eb;
-  background: white;
+  border-top: 1px solid #2a3942;
+  background: #1f2c33;
 }
 
 .upload-progress {
@@ -10,10 +10,10 @@
   gap: 12px;
   padding: 8px 12px;
   margin-bottom: 12px;
-  background: #f3f4f6;
+  background: #2a3942;
   border-radius: 8px;
   font-size: 13px;
-  color: #6b7280;
+  color: #8696a0;
 }
 
 .progress-bar {
@@ -28,7 +28,7 @@
   display: flex;
   align-items: flex-end;
   gap: 8px;
-  background: #f3f4f6;
+  background: #2a3942;
   border-radius: 24px;
   padding: 8px 8px 8px 16px;
 }
@@ -53,17 +53,17 @@
 
 .attach-btn {
   background: transparent;
-  color: #6b7280;
+  color: #8696a0;
 }
 
 .attach-btn:hover:not(:disabled) {
-  background: #e5e7eb;
-  color: #374151;
+  background: #3b4a54;
+  color: #e9edef;
 }
 
 .send-btn {
   background: #25D366;
-  color: white;
+  color: #111b21;
 }
 
 .send-btn:hover:not(:disabled) {
@@ -89,11 +89,11 @@
   resize: none;
   max-height: 120px;
   padding: 8px 0;
-  color: #1a1a2e;
+  color: #e9edef;
 }
 
 .message-input-form textarea::placeholder {
-  color: #9ca3af;
+  color: #8696a0;
 }
 
 .message-input-form textarea:focus {
