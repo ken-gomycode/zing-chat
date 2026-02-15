@@ -269,3 +269,86 @@
 .image-modal-download:hover {
   background: rgba(255, 255, 255, 0.2);
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .message-list {
+    padding: 12px;
+  }
+
+  .message {
+    max-width: 85%;
+  }
+
+  .message-bubble {
+    padding: 8px 12px;
+    border-radius: 16px;
+  }
+
+  .message-text {
+    font-size: 15px;
+  }
+
+  .message-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+
+  .message-avatar-spacer {
+    width: 28px;
+  }
+
+  .message-image {
+    max-width: 200px;
+    max-height: 250px;
+  }
+
+  .date-separator {
+    margin: 12px 0;
+  }
+
+  .date-separator span {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  .image-modal-close {
+    top: 16px;
+    right: 16px;
+    position: fixed;
+  }
+
+  .image-modal-img {
+    max-width: 95vw;
+    max-height: 75vh;
+    border-radius: 4px;
+  }
+
+  .image-modal-download {
+    padding: 12px 24px;
+  }
+}
+
+@media (max-width: 380px) {
+  .message-list {
+    padding: 8px;
+  }
+
+  .message {
+    max-width: 90%;
+  }
+
+  .message-bubble {
+    padding: 6px 10px;
+  }
+
+  .message-text {
+    font-size: 14px;
+  }
+
+  .message-image {
+    max-width: 180px;
+    max-height: 200px;
+  }
+}

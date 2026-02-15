@@ -151,3 +151,60 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .modal-overlay {
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    max-width: 100%;
+    animation: slideUpMobile 0.3s ease;
+  }
+
+  @keyframes slideUpMobile {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-header {
+    padding: 16px 20px;
+  }
+
+  .modal-form {
+    padding: 20px;
+  }
+
+  .modal-form input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn-secondary,
+  .btn-primary {
+    width: 100%;
+    padding: 14px 20px;
+  }
+}
+
+@media (max-width: 380px) {
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .modal-form {
+    padding: 16px;
+  }
+}

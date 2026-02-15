@@ -117,3 +117,54 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .room-item {
+    padding: 14px 16px;
+    border-left: none;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .room-item:active {
+    background: #f3f4f6;
+  }
+
+  .room-item.active {
+    background: #f0f4ff;
+    border-left: none;
+  }
+
+  .room-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+  }
+
+  .room-name {
+    font-size: 15px;
+  }
+
+  .room-preview {
+    font-size: 14px;
+    color: #9ca3af;
+  }
+
+  .room-list-empty,
+  .room-list-error {
+    padding: 60px 24px;
+  }
+}
+
+@media (max-width: 380px) {
+  .room-item {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .room-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+}

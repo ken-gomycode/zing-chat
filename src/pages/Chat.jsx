@@ -11,11 +11,16 @@ import '../styles/Chat.css';
 
 const ChatContent = () => {
   const { userProfile, logout } = useAuth();
-  const { activeRoom, getRoomDisplayName, deleteRoom } = useChat();
+  const { activeRoom, getRoomDisplayName, deleteRoom, selectRoom } = useChat();
   const [showNewRoomModal, setShowNewRoomModal] = useState(false);
   const [showUserSearch, setShowUserSearch] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+
+  const handleBackToChats = () => {
+    selectRoom(null);
+  };
 
   const handleDeleteRoom = async () => {
     if (!activeRoom) return;
@@ -32,8 +37,56 @@ const ChatContent = () => {
   };
 
   return (
-    <div className={`chat-container ${activeRoom ? 'has-info-panel' : ''}`}>
-      <aside className="sidebar">
+    <div className={`chat-container ${activeRoom ? 'has-info-panel has-active-chat' : ''}`}>
+      {/* Mobile Header - shown when no chat selected on mobile */}
+      <div className="mobile-header">
+        <div className="user-info">
+          <div className="avatar">
+            {userProfile?.photoURL ? (
+              <img src={userProfile.photoURL} alt="" />
+            ) : (
+              userProfile?.displayName?.charAt(0).toUpperCase()
+            )}
+          </div>
+          <span className="user-name">{userProfile?.displayName}</span>
+        </div>
+        <div className="mobile-header-actions">
+          <button
+            className="icon-btn"
+            onClick={() => setShowUserSearch(true)}
+            title="Find User"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+          <button
+            className="icon-btn"
+            onClick={() => setShowNewRoomModal(true)}
+            title="New Room"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <button onClick={logout} className="icon-btn" title="Logout">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Room List - shown when no chat selected on mobile */}
+      <div className="mobile-room-list">
+        <RoomList />
+      </div>
+
+      <aside className={`sidebar ${showMobileSidebar ? 'show' : ''}`}>
         <div className="sidebar-header">
           <div className="user-info">
             <div className="avatar">
@@ -86,6 +139,11 @@ const ChatContent = () => {
           <>
             <div className="chat-header">
               <div className="chat-header-info">
+                <button className="back-btn" onClick={handleBackToChats} title="Back to chats">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
                 <div className="chat-avatar">
                   {activeRoom.type === 'direct' ? (
                     getRoomDisplayName(activeRoom).charAt(0).toUpperCase()
