@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { onAuthChange, getUserProfile, logoutUser } from '../services/auth';
+import { setupPresence } from '../services/presence';
 
 const AuthContext = createContext(null);
 
@@ -15,14 +16,22 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const presenceCleanupRef = useRef(null);
 
   useEffect(() => {
     const unsubscribe = onAuthChange(async (firebaseUser) => {
       setUser(firebaseUser);
 
+      if (presenceCleanupRef.current) {
+        presenceCleanupRef.current();
+        presenceCleanupRef.current = null;
+      }
+
       if (firebaseUser) {
         const profile = await getUserProfile(firebaseUser.uid);
         setUserProfile(profile);
+
+        presenceCleanupRef.current = setupPresence(firebaseUser.uid);
       } else {
         setUserProfile(null);
       }
@@ -30,10 +39,19 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      if (presenceCleanupRef.current) {
+        presenceCleanupRef.current();
+      }
+    };
   }, []);
 
   const logout = async () => {
+    if (presenceCleanupRef.current) {
+      presenceCleanupRef.current();
+      presenceCleanupRef.current = null;
+    }
     await logoutUser();
     setUser(null);
     setUserProfile(null);
