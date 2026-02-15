@@ -44,19 +44,26 @@ export const sendMessage = async (roomId, senderId, senderName, senderPhoto, tex
   return { id: docRef.id, ...messageData };
 };
 
-export const subscribeToMessages = (roomId, callback, limitCount = MESSAGES_PER_PAGE) => {
+export const subscribeToMessages = (roomId, callback, onError, limitCount = MESSAGES_PER_PAGE) => {
   const messagesRef = collection(db, 'rooms', roomId, 'messages');
   const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(limitCount));
 
-  return onSnapshot(q, (snapshot) => {
-    const messages = snapshot.docs
-      .map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }))
-      .reverse();
-    callback(messages);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const messages = snapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .reverse();
+      callback(messages);
+    },
+    (error) => {
+      console.error('Error subscribing to messages:', error);
+      onError?.(error);
+    }
+  );
 };
 
 export const loadMoreMessages = async (roomId, oldestMessage) => {

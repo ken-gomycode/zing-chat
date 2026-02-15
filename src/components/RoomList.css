@@ -27,19 +27,27 @@
   }
 }
 
-.room-list-empty {
+.room-list-empty,
+.room-list-error {
   padding: 40px 20px;
   text-align: center;
   color: #9ca3af;
 }
 
-.room-list-empty p {
+.room-list-error {
+  color: #dc2626;
+}
+
+.room-list-empty p,
+.room-list-error p {
   margin: 0;
 }
 
-.room-list-empty .hint {
+.room-list-empty .hint,
+.room-list-error .hint {
   font-size: 13px;
   margin-top: 4px;
+  color: #9ca3af;
 }
 
 .room-item {

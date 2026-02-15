@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import { subscribeToUserRooms, createRoom, createDirectRoom } from '../services/rooms';
 import { subscribeToMessages, sendMessage as sendMessageService } from '../services/messages';
@@ -16,61 +16,85 @@ export const useChat = () => {
 export const ChatProvider = ({ children }) => {
   const { user, userProfile } = useAuth();
   const [rooms, setRooms] = useState([]);
-  const [activeRoom, setActiveRoom] = useState(null);
+  const [activeRoomId, setActiveRoomId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Get activeRoom from rooms array to keep it in sync
+  const activeRoom = rooms.find((room) => room.id === activeRoomId) || null;
 
   useEffect(() => {
     if (!user) {
       setRooms([]);
-      setActiveRoom(null);
+      setActiveRoomId(null);
       setMessages([]);
       setLoadingRooms(false);
       return;
     }
 
     setLoadingRooms(true);
-    const unsubscribe = subscribeToUserRooms(user.uid, (updatedRooms) => {
-      setRooms(updatedRooms);
-      setLoadingRooms(false);
-    });
+    const unsubscribe = subscribeToUserRooms(
+      user.uid,
+      (updatedRooms) => {
+        setRooms(updatedRooms);
+        setLoadingRooms(false);
+        setError(null);
+      },
+      (err) => {
+        setError(err.message);
+        setLoadingRooms(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [user]);
 
   useEffect(() => {
-    if (!activeRoom) {
+    if (!activeRoomId) {
       setMessages([]);
       return;
     }
 
     setLoadingMessages(true);
-    const unsubscribe = subscribeToMessages(activeRoom.id, (newMessages) => {
-      setMessages(newMessages);
-      setLoadingMessages(false);
-    });
+    const unsubscribe = subscribeToMessages(
+      activeRoomId,
+      (newMessages) => {
+        setMessages(newMessages);
+        setLoadingMessages(false);
+      },
+      (err) => {
+        console.error('Message subscription error:', err);
+        setLoadingMessages(false);
+      }
+    );
 
     return () => unsubscribe();
-  }, [activeRoom]);
+  }, [activeRoomId]);
 
   const selectRoom = useCallback((room) => {
-    setActiveRoom(room);
+    setActiveRoomId(room?.id || null);
   }, []);
 
   const sendMessage = useCallback(async (text, type = 'text', fileData = null) => {
-    if (!activeRoom || !user || !userProfile) return;
+    if (!activeRoomId || !user || !userProfile) return;
 
-    await sendMessageService(
-      activeRoom.id,
-      user.uid,
-      userProfile.displayName,
-      userProfile.photoURL,
-      text,
-      type,
-      fileData
-    );
-  }, [activeRoom, user, userProfile]);
+    try {
+      await sendMessageService(
+        activeRoomId,
+        user.uid,
+        userProfile.displayName,
+        userProfile.photoURL,
+        text,
+        type,
+        fileData
+      );
+    } catch (err) {
+      console.error('Failed to send message:', err);
+      throw err;
+    }
+  }, [activeRoomId, user, userProfile]);
 
   const createNewRoom = useCallback(async (name) => {
     if (!user) return null;
@@ -81,6 +105,7 @@ export const ChatProvider = ({ children }) => {
   const startDirectChat = useCallback(async (otherUserId, otherUserName) => {
     if (!user || !userProfile) return null;
 
+    // Check if direct room already exists
     const existingRoom = rooms.find(
       (room) =>
         room.type === 'direct' &&
@@ -89,7 +114,7 @@ export const ChatProvider = ({ children }) => {
     );
 
     if (existingRoom) {
-      setActiveRoom(existingRoom);
+      setActiveRoomId(existingRoom.id);
       return existingRoom;
     }
 
@@ -99,7 +124,7 @@ export const ChatProvider = ({ children }) => {
       userProfile.displayName,
       otherUserName
     );
-    setActiveRoom(room);
+    setActiveRoomId(room.id);
     return room;
   }, [user, userProfile, rooms]);
 
@@ -120,6 +145,7 @@ export const ChatProvider = ({ children }) => {
     messages,
     loadingRooms,
     loadingMessages,
+    error,
     selectRoom,
     sendMessage,
     createNewRoom,

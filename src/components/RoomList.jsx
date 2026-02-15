@@ -3,7 +3,16 @@ import { formatDistanceToNow } from '../utils/dateUtils';
 import './RoomList.css';
 
 const RoomList = () => {
-  const { rooms, activeRoom, selectRoom, loadingRooms, getRoomDisplayName } = useChat();
+  const { rooms, activeRoom, selectRoom, loadingRooms, getRoomDisplayName, error } = useChat();
+
+  if (error) {
+    return (
+      <div className="room-list-error">
+        <p>Failed to load chats</p>
+        <p className="hint">Check console for details</p>
+      </div>
+    );
+  }
 
   if (loadingRooms) {
     return (

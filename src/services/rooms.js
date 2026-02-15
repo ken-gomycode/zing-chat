@@ -86,20 +86,30 @@ export const getRoom = async (roomId) => {
   return null;
 };
 
-export const subscribeToUserRooms = (userId, callback) => {
+export const subscribeToUserRooms = (userId, callback, onError) => {
   const q = query(
     roomsRef,
     where('members', 'array-contains', userId),
     orderBy('lastMessageAt', 'desc')
   );
 
-  return onSnapshot(q, (snapshot) => {
-    const rooms = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    callback(rooms);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const rooms = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      callback(rooms);
+    },
+    (error) => {
+      console.error('Error subscribing to rooms:', error);
+      if (error.code === 'failed-precondition') {
+        console.error('Missing Firestore index. Create composite index for rooms collection: members (array-contains) + lastMessageAt (desc)');
+      }
+      onError?.(error);
+    }
+  );
 };
 
 export const updateRoomLastMessage = async (roomId, message) => {
