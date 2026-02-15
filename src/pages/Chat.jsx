@@ -6,13 +6,30 @@ import MessageList from '../components/MessageList';
 import MessageInput from '../components/MessageInput';
 import NewRoomModal from '../components/NewRoomModal';
 import UserSearch from '../components/UserSearch';
+import ConfirmDialog from '../components/ConfirmDialog';
 import '../styles/Chat.css';
 
 const ChatContent = () => {
   const { userProfile, logout } = useAuth();
-  const { activeRoom, getRoomDisplayName } = useChat();
+  const { activeRoom, getRoomDisplayName, deleteRoom } = useChat();
   const [showNewRoomModal, setShowNewRoomModal] = useState(false);
   const [showUserSearch, setShowUserSearch] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDeleteRoom = async () => {
+    if (!activeRoom) return;
+
+    setDeleting(true);
+    try {
+      await deleteRoom(activeRoom.id);
+      setShowDeleteConfirm(false);
+    } catch (err) {
+      alert('Failed to delete chat. Please try again.');
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div className="chat-container">
@@ -83,6 +100,20 @@ const ChatContent = () => {
                   </span>
                 </div>
               </div>
+              <div className="chat-header-actions">
+                <button
+                  className="icon-btn danger"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  title="Delete Chat"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                </button>
+              </div>
             </div>
             <MessageList />
             <MessageInput />
@@ -113,6 +144,19 @@ const ChatContent = () => {
                 <p><strong>Type:</strong> {activeRoom.type === 'direct' ? 'Direct Message' : 'Group'}</p>
                 <p><strong>Members:</strong> {activeRoom.memberCount}</p>
               </div>
+              <div className="info-section">
+                <h4>Actions</h4>
+                <button
+                  className="btn-danger-outline"
+                  onClick={() => setShowDeleteConfirm(true)}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                  Delete Chat
+                </button>
+              </div>
             </div>
           </>
         ) : (
@@ -133,6 +177,17 @@ const ChatContent = () => {
       <UserSearch
         isOpen={showUserSearch}
         onClose={() => setShowUserSearch(false)}
+      />
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Delete Chat"
+        message={`Are you sure you want to delete "${getRoomDisplayName(activeRoom)}"? This will permanently delete all messages and cannot be undone.`}
+        confirmText={deleting ? 'Deleting...' : 'Delete'}
+        cancelText="Cancel"
+        variant="danger"
+        onConfirm={handleDeleteRoom}
+        onCancel={() => setShowDeleteConfirm(false)}
       />
     </div>
   );

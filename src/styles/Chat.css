@@ -117,6 +117,16 @@
   color: #374151;
 }
 
+.icon-btn.danger {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.icon-btn.danger:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
 .new-chat-btn {
   width: 28px;
   height: 28px;
@@ -194,6 +204,12 @@
 .member-count {
   font-size: 13px;
   color: #6b7280;
+}
+
+.chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .no-chat-selected {
@@ -284,6 +300,27 @@
 .info-section strong {
   color: #6b7280;
   font-weight: 500;
+}
+
+.btn-danger-outline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  background: white;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger-outline:hover {
+  background: #fef2f2;
+  border-color: #f87171;
 }
 
 /* Responsive */

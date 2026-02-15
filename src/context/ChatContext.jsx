@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
-import { subscribeToUserRooms, createRoom, createDirectRoom } from '../services/rooms';
+import { subscribeToUserRooms, createRoom, createDirectRoom, deleteRoom as deleteRoomService } from '../services/rooms';
 import { subscribeToMessages, sendMessage as sendMessageService } from '../services/messages';
 
 const ChatContext = createContext(null);
@@ -139,6 +139,18 @@ export const ChatProvider = ({ children }) => {
     return room.name;
   }, [user]);
 
+  const deleteRoom = useCallback(async (roomId) => {
+    try {
+      await deleteRoomService(roomId);
+      if (activeRoomId === roomId) {
+        setActiveRoomId(null);
+      }
+    } catch (err) {
+      console.error('Failed to delete room:', err);
+      throw err;
+    }
+  }, [activeRoomId]);
+
   const value = {
     rooms,
     activeRoom,
@@ -151,6 +163,7 @@ export const ChatProvider = ({ children }) => {
     createNewRoom,
     startDirectChat,
     getRoomDisplayName,
+    deleteRoom,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

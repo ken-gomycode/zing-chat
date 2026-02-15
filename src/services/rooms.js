@@ -12,6 +12,8 @@ import {
   arrayUnion,
   arrayRemove,
   getDoc,
+  getDocs,
+  writeBatch,
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -129,4 +131,21 @@ export const inviteToRoom = async (roomId, userId) => {
     members: arrayUnion(userId),
     memberCount: currentCount + 1,
   });
+};
+
+export const deleteRoom = async (roomId) => {
+  const batch = writeBatch(db);
+
+  // Delete all messages in the room
+  const messagesRef = collection(db, 'rooms', roomId, 'messages');
+  const messagesSnapshot = await getDocs(messagesRef);
+  messagesSnapshot.docs.forEach((msgDoc) => {
+    batch.delete(msgDoc.ref);
+  });
+
+  // Delete the room document
+  const roomRef = doc(db, 'rooms', roomId);
+  batch.delete(roomRef);
+
+  await batch.commit();
 };
