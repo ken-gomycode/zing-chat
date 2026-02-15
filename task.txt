@@ -1,0 +1,357 @@
+
+FIREBASE CHAT APPLICATION IMPLEMENTATION PLAN
+============================================
+
+TECH STACK
+----------
+Frontend: React (recommended) or Vanilla JS
+State: Context API or simple state hooks
+Backend: Firebase Only
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Storage
+- Firebase Hosting (optional)
+- Firebase Presence via Realtime Database (for accurate online status)
+
+------------------------------------------------------------
+
+1. PROJECT SETUP
+----------------
+1. Create Firebase project
+2. Enable:
+   - Email/Password Authentication
+   - Google Authentication (optional)
+   - Cloud Firestore
+   - Realtime Database (for presence)
+   - Firebase Storage
+
+3. Install SDK
+   npm install firebase
+
+4. Create firebase config module
+   firebase.js:
+   - initializeApp
+   - getAuth
+   - getFirestore
+   - getStorage
+   - getDatabase
+
+------------------------------------------------------------
+
+2. DATABASE DESIGN
+------------------
+
+COLLECTIONS
+
+users (collection)
+------------------
+userId (doc id)
+{
+  displayName: string
+  displayName_lowercase: string  // for case-insensitive search
+  email: string
+  photoURL: string
+  createdAt: timestamp
+  lastSeen: timestamp
+  status: "online" | "offline"
+}
+
+rooms (collection)
+------------------
+roomId (doc id)
+{
+  name: string
+  createdBy: userId
+  createdAt: timestamp
+  members: [userId]           // for small groups (<50 members)
+  memberCount: number         // track member count
+  lastMessage: string
+  lastMessageAt: timestamp
+  type: "direct" | "group"
+}
+
+roomMembers (subcollection under rooms/{roomId}/members)
+--------------------------------------------------------
+// For large groups, use subcollection instead of array
+userId (doc id)
+{
+  joinedAt: timestamp
+  role: "admin" | "member"
+}
+
+messages (subcollection under rooms/{roomId}/messages)
+------------------------------------------------------
+messageId
+{
+  senderId: userId
+  senderName: string          // denormalized for display
+  senderPhoto: string         // denormalized for display
+  text: string
+  type: "text" | "image" | "file"
+  fileURL: string
+  fileName: string
+  fileSize: number
+  createdAt: timestamp
+  readBy: [userId]            // limit to last 10 readers for large groups
+}
+
+readReceipts (subcollection under rooms/{roomId}/messages/{messageId}/readReceipts)
+-----------------------------------------------------------------------------------
+// For large groups, use subcollection for read receipts
+userId (doc id)
+{
+  readAt: timestamp
+}
+
+presence (Realtime Database)
+----------------------------
+/status/{userId}
+{
+  state: online/offline
+  last_changed: timestamp
+}
+
+------------------------------------------------------------
+
+3. AUTHENTICATION FLOW
+----------------------
+
+UI SCREENS:
+- Login Page
+- Register Page
+
+REGISTER LOGIC:
+1. createUserWithEmailAndPassword
+2. updateProfile(displayName, photoURL)
+3. create user document in Firestore
+
+LOGIN LOGIC:
+1. signInWithEmailAndPassword
+2. redirect to chat dashboard
+
+AUTH STATE HANDLER:
+onAuthStateChanged -> load user profile
+
+------------------------------------------------------------
+
+4. ONLINE/OFFLINE STATUS (PRESENCE SYSTEM)
+-----------------------------------------
+
+Use Realtime Database for reliable presence
+
+LOGIC:
+1. When user connects:
+   write /status/{uid} = online
+2. onDisconnect():
+   set offline automatically (Firebase handles this)
+3. Sync to Firestore:
+   - Option A: Cloud Function onUpdate trigger (recommended, reliable)
+   - Option B: Client listener on RTDB (simpler, less reliable)
+   - We'll use client-side sync for simplicity, can upgrade later
+
+UI:
+- green dot beside avatar
+- "last seen 5 mins ago"
+
+------------------------------------------------------------
+
+5. CHAT ROOM SYSTEM
+-------------------
+
+FEATURES:
+- create room
+- join room
+- list user rooms
+
+UI:
+Left Sidebar:
+- profile info
+- list of rooms
+- create room button
+
+CREATE ROOM:
+addDoc(rooms, {
+ name,
+ createdBy,
+ members: [uid],
+ createdAt
+})
+
+JOIN ROOM:
+updateDoc arrayUnion(uid)
+
+REALTIME ROOM LIST:
+onSnapshot(query rooms where members array contains uid)
+
+------------------------------------------------------------
+
+6. MESSAGING SYSTEM
+-------------------
+
+UI COMPONENTS:
+- message list
+- message bubble (mine / others)
+- input box
+- attachments button
+- send button
+
+SEND TEXT MESSAGE:
+addDoc(rooms/{roomId}/messages, {
+ senderId,
+ text,
+ type: text,
+ createdAt: serverTimestamp()
+})
+
+Update room last message:
+updateDoc(room, {
+ lastMessage,
+ lastMessageAt
+})
+
+REALTIME RECEIVE:
+onSnapshot(messages ordered by createdAt)
+
+PAGINATION:
+- Load last 30 messages initially
+- Use startAfter(oldestMessage) for loading more
+- Infinite scroll up to load history
+- Keep realtime listener on recent messages only
+
+AUTO SCROLL:
+scroll to bottom on new message (only if already at bottom)
+
+------------------------------------------------------------
+
+7. FILE & IMAGE MESSAGES
+------------------------
+
+UPLOAD FLOW:
+1. user selects file
+2. uploadBytes(storageRef)
+3. getDownloadURL
+4. create message with type=file/image
+
+UI:
+- image preview bubble
+- file card with download
+
+STORAGE STRUCTURE:
+/chatFiles/{roomId}/{messageId}/{filename}
+
+------------------------------------------------------------
+
+8. MESSAGE READ RECEIPTS
+------------------------
+
+When message visible:
+updateDoc(message, {
+ seenBy: arrayUnion(currentUserId)
+})
+
+UI:
+- single tick = delivered
+- double tick = seen
+
+------------------------------------------------------------
+
+9. USER PROFILE PANEL
+---------------------
+
+FEATURES:
+- update avatar
+- update name
+- view last seen
+
+LOGIC:
+upload avatar -> storage
+update Firestore user doc
+
+------------------------------------------------------------
+
+10. SEARCH USERS / INVITE
+-------------------------
+
+Search:
+- Store displayName_lowercase on user creation
+- Query: where displayName_lowercase >= searchTerm.toLowerCase()
+- Query: where displayName_lowercase < searchTerm.toLowerCase() + '\uf8ff'
+- This enables prefix matching (e.g., "joh" finds "John")
+
+Invite to room:
+updateDoc(room.members arrayUnion(userId))
+
+------------------------------------------------------------
+
+11. UI STRUCTURE
+----------------
+
+LAYOUT:
+--------------------------------------
+| Sidebar | Chat Window | Info Panel |
+--------------------------------------
+
+Sidebar:
+- profile
+- rooms list
+- new chat
+
+Chat Window:
+- header (room name)
+- messages
+- input
+
+Info Panel:
+- participants
+- attachments
+
+------------------------------------------------------------
+
+12. SECURITY RULES (IMPORTANT)
+------------------------------
+
+FIRESTORE:
+- user can read only rooms they belong to
+- user can send message only if member
+- user can edit only own profile
+
+STORAGE:
+- only authenticated users
+- only upload inside own room
+
+------------------------------------------------------------
+
+13. ERROR HANDLING & OFFLINE SUPPORT
+------------------------------------
+
+OFFLINE SUPPORT:
+- Enable Firestore persistence: enableIndexedDbPersistence(db)
+- Messages queue locally when offline
+- Show offline indicator in UI
+- Sync automatically when back online
+
+ERROR HANDLING:
+- Wrap all Firebase calls in try/catch
+- Show toast notifications for errors
+- Retry logic for failed uploads (max 3 attempts)
+- Graceful degradation when features unavailable
+
+LOADING STATES:
+- Skeleton loaders for messages/rooms
+- Spinner for file uploads with progress %
+- Disabled buttons during async operations
+
+------------------------------------------------------------
+
+14. OPTIONAL FEATURES
+---------------------
+- typing indicator
+- message reactions
+- delete message
+- edit message
+- dark mode
+- push notifications
+
+------------------------------------------------------------
+
+END OF PLAN
