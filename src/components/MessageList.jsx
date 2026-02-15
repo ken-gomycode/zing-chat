@@ -52,7 +52,7 @@ const MessageList = () => {
           (index === 0 || messages[index - 1]?.senderId !== message.senderId);
 
         return (
-          <div key={message.id}>
+          <div className='message-wrapper' key={message.id}>
             {showDateSeparator && (
               <div className="date-separator">
                 <span>{formatMessageDate(message.createdAt)}</span>

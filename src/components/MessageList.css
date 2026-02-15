@@ -43,8 +43,13 @@
   max-width: 70%;
 }
 
+.message-wrapper {
+  position: relative;
+}
+
 .message.own {
-  margin-left: auto;
+  position: absolute;
+  right: 0;
 }
 
 .message.other {
